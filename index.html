@@ -4,10 +4,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Typing Test</title>
+    <title>Rocket Typing – Free Online Typing Test &amp; Practice</title>
+    <!-- SEO meta tags -->
+    <meta name="description" content="Rocket Typing - Free online typing test. Improve your typing speed and accuracy with real-time feedback, leaderboards, and customizable modes. Fast, accurate, minimal.">
+    <meta name="keywords" content="typing test, typing practice, typing speed, rocket typing, online typing, keyboard test, typing game">
+    <meta name="author" content="Rocket Typing">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="https://rockettyping.com/">
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Rocket Typing – Free Online Typing Test">
+    <meta property="og:description" content="Rocket Typing - Fast, accurate, minimal. Test your typing speed and practice with real-time feedback.">
+    <meta property="og:url" content="https://rockettyping.com/">
+    <meta property="og:image" content="https://rockettyping.com/images/typing-og.png">
+    <meta property="og:site_name" content="Rocket Typing">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Rocket Typing – Free Online Typing Test">
+    <meta name="twitter:description" content="Free online typing test with real-time feedback and leaderboards. Practice and improve your typing speed.">
+    <meta name="twitter:image" content="https://rockettyping.com/images/typing-og.png">
+    <meta name="twitter:creator" content="@rockettyping">
+
+    <!-- Structured data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Rocket Typing",
+      "description": "Free online typing test and practice platform. Improve your typing speed and accuracy.",
+      "url": "https://rockettyping.com/",
+      "applicationCategory": "UtilityApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "Rocket Typing"
+      }
+    }
+    </script>
+
+    <!-- Additional SEO & Meta Tags -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta name="theme-color" content="#323437">
+    <meta property="og:locale" content="en_US">
+    <meta name="category" content="Education">
+    <meta http-equiv="expires" content="604800">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+    
+    <!-- Performance hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="image" href="/images/logo.webp">
     <style>
         /* Basic styling to mimic Monkeytype's minimalistic interface */
-        body {
+body {
             background-color: #323437;
             color: #e2b714;
             font-family: 'Roboto Mono', monospace;
@@ -15,12 +73,125 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            overflow: hidden;
+            overflow: auto;
             background: radial-gradient(circle at center,
                     #3a3d41 0%,
                     #2b2d30 100%);
+        }
+
+        #app {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        section#about {
+            display: none;
+        }
+
+        /* Modal styles */
+        #aboutModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        #aboutModal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #2b2d30;
+            color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            border: 1px solid #444;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #e2b714;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: #ffffff;
+        }
+
+        .modal-content h2 {
+            color: #e2b714;
+            font-size: 28px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .modal-content p {
+            color: #cccccc;
+            margin-bottom: 15px;
+            font-size: 15px;
+            line-height: 1.6;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .modal-content strong {
+            color: #e2b714;
+        }
+
+        /* Fixed footer */
+        body {
+            padding-bottom: 60px;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #2b2d30;
+            padding: 15px 20px;
+            text-align: center;
+            color: #999;
+            border-top: 1px solid #444;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 13px;
+            z-index: 999;
+        }
+
+        footer a {
+            color: #e2b714;
+            text-decoration: none;
+            margin: 0 8px;
+            transition: opacity 0.2s;
+        }
+
+        footer a:hover {
+            opacity: 0.8;
         }
 
         #test-config {
@@ -111,8 +282,9 @@
             width: 2px;
             height: 45px;
             background: #e2b714;
-            transition: transform 0.1s cubic-bezier(.2, 0, .2, 1);
-            will-change: transform;
+            /* faster linear transition for super-smooth motion */
+            transition: transform 0.06s linear, height 0.06s linear;
+            will-change: transform, height;
             left: 0;
             top: 0;
         }
@@ -225,6 +397,13 @@
             transform: scale(1.05);
         }
 
+
+        section#about {
+            max-width: 800px;
+            margin: 20px auto;
+            color: #ffffff;
+            text-align: left;
+        }
         #timer {
             position: absolute;
             top: 70px;
@@ -277,6 +456,7 @@
 </head>
 
 <body>
+    <div id="app">
     <img id="logo" src="images/logo.webp" alt="Website Logo"> <!-- If in images folder, use src="images/logo.jpg" -->
     <div id="test-config">
         <button class="mode active" data-mode="time">⏰Time</button>
@@ -305,6 +485,59 @@
         </div>
         <button id="restart">Restart</button>
     </div>
+    </div> <!-- end #app -->
+    
+    <!-- About Modal -->
+    <div id="aboutModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeAboutModal()">&times;</button>
+            <h2>About Rocket Typing</h2>
+            <p>Welcome to <strong>Rocket Typing</strong>, your ultimate destination for improving <strong>typing speed</strong> and accuracy. Whether you're a student, professional, or typing enthusiast, Rocket Typing offers a free, fast, and minimal typing test experience.</p>
+            
+            <p>Our <strong>typing test platform</strong> provides real-time feedback on your performance, measuring words per minute (WPM), accuracy rate, and consistency. Choose from Easy, Medium, or Hard difficulty modes and track your progress as you improve.</p>
+            
+            <p>We believe in simplicity and speed. No distracting animations, just pure focused <strong>typing practice</strong>. Compete with typists worldwide and watch your <strong>typing skills</strong> improve dramatically.</p>
+            
+            <p>Whether you're preparing for typing speed assessments or aiming to boost productivity at work, Rocket Typing is your go-to <strong>online typing test</strong>. Start improving your keyboard skills today!</p>
+        </div>
+    </div>
+    
+    <!-- Scrollable About Section (hidden, for SEO) -->
+    <section id="about" aria-label="About Rocket Typing">
+        <h2>About Rocket Typing</h2>
+        <p>Welcome to <strong>Rocket Typing</strong>, your ultimate destination for improving <strong>typing speed</strong> and accuracy. Whether you're a student, professional, or typing enthusiast, Rocket Typing offers a free, fast, and minimal typing test experience.</p>
+        
+        <p>Our <strong>typing test platform</strong> provides real-time feedback on your performance, measuring words per minute (WPM), accuracy rate, and consistency. Choose from Easy, Medium, or Hard difficulty modes and track your progress as you improve.</p>
+        
+        <p>We believe in simplicity and speed. No distracting animations, just pure focused <strong>typing practice</strong>. Compete with typists worldwide and watch your <strong>typing skills</strong> improve dramatically.</p>
+        
+        <p>Whether you're preparing for typing speed assessments or aiming to boost productivity at work, Rocket Typing is your go-to <strong>online typing test</strong>. Start improving your keyboard skills today!</p>
+    </section>
+
+    <script>
+        // Modal functions
+        function openAboutModal() {
+            document.getElementById('aboutModal').classList.add('active');
+        }
+
+        function closeAboutModal() {
+            document.getElementById('aboutModal').classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('aboutModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAboutModal();
+            }
+        });
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeAboutModal();
+            }
+        });
+    </script>
 
     <script>
         // Config
@@ -577,7 +810,7 @@
                 const wordSpan = document.createElement('div');
                 wordSpan.classList.add('word');
                 if (i === currentWordIndex) wordSpan.classList.add('active');
-                word.split('').forEach((letter, j) => {
+                word.split('').forEach((letter) => {
                     const letterSpan = document.createElement('span');
                     letterSpan.classList.add('letter');
                     letterSpan.textContent = letter;
@@ -585,9 +818,8 @@
                 });
                 wordsDiv.appendChild(wordSpan);
             });
-            updateCaret();
+            updateCaret();   // ← now uses the ultra-smooth version
         }
-
         function updateCaret() {
             const activeWord = wordsDiv.querySelector('.word.active');
             if (!activeWord) return;
@@ -606,54 +838,30 @@
             }
 
             if (!target) return;
-            const rect = target.getBoundingClientRect();
-            const parentRect = wordsDiv.getBoundingClientRect();
-            const scrollTop = wordsDiv.scrollTop;
-            const scrollLeft = wordsDiv.scrollLeft;
 
-            let x = rect.left - parentRect.left + scrollLeft;
-            let y = rect.top - parentRect.top + scrollTop;
+            // calculate coords based on offsets; scroll of container will move caret automatically
+            let x = activeWord.offsetLeft + target.offsetLeft;
+            let y = activeWord.offsetTop + target.offsetTop;
+            if (after) x += target.offsetWidth;
 
-            if (after) {
-                x += rect.width;
-            }
-
-            // ===== PERFECT ROW-BASED SCROLL =====
-
-            // Get all word elements
+            // row-based scrolling to keep caret on screen
             const wordElements = Array.from(wordsDiv.querySelectorAll('.word'));
-
-            // Build unique visual rows using offsetTop
             const rows = [];
             wordElements.forEach(word => {
                 const top = word.offsetTop;
-
-                if (!rows.some(r => Math.abs(r - top) < 5)) {
-                    rows.push(top);
-                }
+                if (!rows.some(r => Math.abs(r - top) < 5)) rows.push(top);
             });
-
-            // Sort rows top → bottom
             rows.sort((a, b) => a - b);
-
-            // Current active word row
             const currentRowTop = activeWord.offsetTop;
             const currentRowIndex = rows.findIndex(r => Math.abs(r - currentRowTop) < 5);
-
-            // Detect which row is currently visible at top
             const currentScrollTop = wordsDiv.scrollTop;
             const visibleRowIndex = rows.findIndex(r => r >= currentScrollTop - 5);
-
-            // Allow exactly 2 rows visible
             if (currentRowIndex - visibleRowIndex >= 2) {
                 wordsDiv.scrollTop = rows[visibleRowIndex + 1];
             }
 
-            caret.style.height = `${rect.height}px`;
-
-            requestAnimationFrame(() => {
-                caret.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-            });
+            caret.style.height = `${target.offsetHeight}px`;
+            caret.style.transform = `translate3d(${x}px, ${y}px, 0)`;
 
             if (!wordsDiv.contains(caret)) {
                 wordsDiv.appendChild(caret);
@@ -1024,6 +1232,17 @@
         // Initial setup
         resetTest();
     </script>
+    </main>
+    <footer>
+        <p style="margin: 0;">
+            <a href="javascript:openAboutModal()">About</a> | 
+            <a href="/privacy.html">Privacy Policy</a> | 
+            <a href="/terms.html">Terms of Service</a> | 
+            <a href="/contact.html">Contact</a> |
+            <a href="https://github.com/rockettyping" target="_blank">GitHub</a>
+        </p>
+        <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">&copy; 2026 <strong style="color: #e2b714;">Rocket Typing</strong></p>
+    </footer>
 </body>
 
 </html>

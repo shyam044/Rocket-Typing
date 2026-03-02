@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rocket Typing – Free Online Typing Test &amp; Practice</title>
     <!-- SEO meta tags -->
-    <meta name="description" content="Rocket Typing - Free online typing test. Improve your typing speed and accuracy with real-time feedback, leaderboards, and customizable modes. Fast, accurate, minimal.">
-    <meta name="keywords" content="typing test, typing practice, typing speed, rocket typing, online typing, keyboard test, typing game">
+    <meta name="description"
+        content="Rocket Typing - Free online typing test. Improve your typing speed and accuracy with real-time feedback, leaderboards, and customizable modes. Fast, accurate, minimal.">
+    <meta name="keywords"
+        content="typing test, typing practice, typing speed, rocket typing, online typing, keyboard test, typing game">
     <meta name="author" content="Rocket Typing">
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <link rel="canonical" href="https://rockettyping.com/">
@@ -16,7 +18,8 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Rocket Typing – Free Online Typing Test">
-    <meta property="og:description" content="Rocket Typing - Fast, accurate, minimal. Test your typing speed and practice with real-time feedback.">
+    <meta property="og:description"
+        content="Rocket Typing - Fast, accurate, minimal. Test your typing speed and practice with real-time feedback.">
     <meta property="og:url" content="https://rockettyping.com/">
     <meta property="og:image" content="https://rockettyping.com/images/typing-og.png">
     <meta property="og:site_name" content="Rocket Typing">
@@ -24,7 +27,8 @@
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Rocket Typing – Free Online Typing Test">
-    <meta name="twitter:description" content="Free online typing test with real-time feedback and leaderboards. Practice and improve your typing speed.">
+    <meta name="twitter:description"
+        content="Free online typing test with real-time feedback and leaderboards. Practice and improve your typing speed.">
     <meta name="twitter:image" content="https://rockettyping.com/images/typing-og.png">
     <meta name="twitter:creator" content="@rockettyping">
 
@@ -58,14 +62,25 @@
     <meta http-equiv="expires" content="604800">
     <meta name="language" content="English">
     <meta name="revisit-after" content="7 days">
-    
+
     <!-- Performance hints -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="image" href="/images/logo.webp">
+
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XX2TNELPPJ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-XX2TNELPPJ');
+    </script>
     <style>
         /* Basic styling to mimic Monkeytype's minimalistic interface */
-body {
+        body {
             background-color: #323437;
             color: #e2b714;
             font-family: 'Roboto Mono', monospace;
@@ -252,21 +267,25 @@ body {
         }
 
         #words .letter {
-            color: #646669; /* Gray for untyped */
+            color: #646669;
+            /* Gray for untyped */
             transition: color 0.1s ease, transform 0.05s ease;
         }
 
         #words .letter.correct {
-            color: #ffffff; /* White for correct */
+            color: #ffffff;
+            /* White for correct */
             transform: none;
         }
 
         #words .letter.incorrect {
-            color: #da3333; /* Red for incorrect/missed */
+            color: #da3333;
+            /* Red for incorrect/missed */
         }
 
         #words .letter.extra {
-            color: #7e2a33; /* Dark red for extra */
+            color: #7e2a33;
+            /* Dark red for extra */
         }
 
         #words .letter {
@@ -404,6 +423,7 @@ body {
             color: #ffffff;
             text-align: left;
         }
+
         #timer {
             position: absolute;
             top: 70px;
@@ -439,13 +459,17 @@ body {
             padding: 5px 10px;
             font-size: 16px;
         }
+
         #logo {
             position: absolute;
             top: 20px;
             left: 20px;
-            width: 100px; /* Adjust width as needed */
-            height: auto; /* Maintains aspect ratio */
-            opacity: 0.8; /* Slight transparency to blend with background */
+            width: 100px;
+            /* Adjust width as needed */
+            height: auto;
+            /* Maintains aspect ratio */
+            opacity: 0.8;
+            /* Slight transparency to blend with background */
             transition: opacity 0.2s;
         }
 
@@ -457,61 +481,77 @@ body {
 
 <body>
     <div id="app">
-    <img id="logo" src="images/logo.webp" alt="Website Logo"> <!-- If in images folder, use src="images/logo.jpg" -->
-    <div id="test-config">
-        <button class="mode active" data-mode="time">⏰Time</button>
-        <button class="mode" data-mode="words">🎯Words</button>
-    </div>
-    <div id="timer">30</div>
-    <div id="difficulty-container">
-        <label for="difficulty-select">Mode:</label>
-        <select id="difficulty-select">
-            <option value="easy" selected>Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
-        </select>
-    </div>
-    <div id="words"></div>
-    <input id="input" type="text" autofocus>
-    <div id="result" style="display: none;">
-        <!-- Top Row: WPM -->
-        <div class="stat main-stat" id="wpm"></div>
-
-        <!-- Bottom Row: Raw / Acc / Cons -->
-        <div class="stats-container secondary-stats">
-            <div class="stat" id="raw"></div>
-            <div class="stat" id="acc"></div>
-            <div class="stat" id="consistency"></div>
+        <img id="logo" src="images/logo.webp" alt="Website Logo">
+        <!-- If in images folder, use src="images/logo.jpg" -->
+        <div id="test-config">
+            <button class="mode active" data-mode="time">⏰Time</button>
+            <button class="mode" data-mode="words">🎯Words</button>
         </div>
-        <button id="restart">Restart</button>
-    </div>
+        <div id="timer">30</div>
+        <div id="difficulty-container">
+            <label for="difficulty-select">Mode:</label>
+            <select id="difficulty-select">
+                <option value="easy" selected>Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+        </div>
+        <div id="words"></div>
+        <input id="input" type="text" autofocus>
+        <div id="result" style="display: none;">
+            <!-- Top Row: WPM -->
+            <div class="stat main-stat" id="wpm"></div>
+
+            <!-- Bottom Row: Raw / Acc / Cons -->
+            <div class="stats-container secondary-stats">
+                <div class="stat" id="raw"></div>
+                <div class="stat" id="acc"></div>
+                <div class="stat" id="consistency"></div>
+            </div>
+            <button id="restart">Restart</button>
+        </div>
     </div> <!-- end #app -->
-    
+
     <!-- About Modal -->
     <div id="aboutModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeAboutModal()">&times;</button>
             <h2>About Rocket Typing</h2>
-            <p>Welcome to <strong>Rocket Typing</strong>, your ultimate destination for improving <strong>typing speed</strong> and accuracy. Whether you're a student, professional, or typing enthusiast, Rocket Typing offers a free, fast, and minimal typing test experience.</p>
-            
-            <p>Our <strong>typing test platform</strong> provides real-time feedback on your performance, measuring words per minute (WPM), accuracy rate, and consistency. Choose from Easy, Medium, or Hard difficulty modes and track your progress as you improve.</p>
-            
-            <p>We believe in simplicity and speed. No distracting animations, just pure focused <strong>typing practice</strong>. Compete with typists worldwide and watch your <strong>typing skills</strong> improve dramatically.</p>
-            
-            <p>Whether you're preparing for typing speed assessments or aiming to boost productivity at work, Rocket Typing is your go-to <strong>online typing test</strong>. Start improving your keyboard skills today!</p>
+            <p>Welcome to <strong>Rocket Typing</strong>, your ultimate destination for improving <strong>typing
+                    speed</strong> and accuracy. Whether you're a student, professional, or typing enthusiast, Rocket
+                Typing offers a free, fast, and minimal typing test experience.</p>
+
+            <p>Our <strong>typing test platform</strong> provides real-time feedback on your performance, measuring
+                words per minute (WPM), accuracy rate, and consistency. Choose from Easy, Medium, or Hard difficulty
+                modes and track your progress as you improve.</p>
+
+            <p>We believe in simplicity and speed. No distracting animations, just pure focused <strong>typing
+                    practice</strong>. Compete with typists worldwide and watch your <strong>typing skills</strong>
+                improve dramatically.</p>
+
+            <p>Whether you're preparing for typing speed assessments or aiming to boost productivity at work, Rocket
+                Typing is your go-to <strong>online typing test</strong>. Start improving your keyboard skills today!
+            </p>
         </div>
     </div>
-    
+
     <!-- Scrollable About Section (hidden, for SEO) -->
     <section id="about" aria-label="About Rocket Typing">
         <h2>About Rocket Typing</h2>
-        <p>Welcome to <strong>Rocket Typing</strong>, your ultimate destination for improving <strong>typing speed</strong> and accuracy. Whether you're a student, professional, or typing enthusiast, Rocket Typing offers a free, fast, and minimal typing test experience.</p>
-        
-        <p>Our <strong>typing test platform</strong> provides real-time feedback on your performance, measuring words per minute (WPM), accuracy rate, and consistency. Choose from Easy, Medium, or Hard difficulty modes and track your progress as you improve.</p>
-        
-        <p>We believe in simplicity and speed. No distracting animations, just pure focused <strong>typing practice</strong>. Compete with typists worldwide and watch your <strong>typing skills</strong> improve dramatically.</p>
-        
-        <p>Whether you're preparing for typing speed assessments or aiming to boost productivity at work, Rocket Typing is your go-to <strong>online typing test</strong>. Start improving your keyboard skills today!</p>
+        <p>Welcome to <strong>Rocket Typing</strong>, your ultimate destination for improving <strong>typing
+                speed</strong> and accuracy. Whether you're a student, professional, or typing enthusiast, Rocket Typing
+            offers a free, fast, and minimal typing test experience.</p>
+
+        <p>Our <strong>typing test platform</strong> provides real-time feedback on your performance, measuring words
+            per minute (WPM), accuracy rate, and consistency. Choose from Easy, Medium, or Hard difficulty modes and
+            track your progress as you improve.</p>
+
+        <p>We believe in simplicity and speed. No distracting animations, just pure focused <strong>typing
+                practice</strong>. Compete with typists worldwide and watch your <strong>typing skills</strong> improve
+            dramatically.</p>
+
+        <p>Whether you're preparing for typing speed assessments or aiming to boost productivity at work, Rocket Typing
+            is your go-to <strong>online typing test</strong>. Start improving your keyboard skills today!</p>
     </section>
 
     <script>
@@ -525,14 +565,14 @@ body {
         }
 
         // Close modal when clicking outside
-        document.getElementById('aboutModal').addEventListener('click', function(e) {
+        document.getElementById('aboutModal').addEventListener('click', function (e) {
             if (e.target === this) {
                 closeAboutModal();
             }
         });
 
         // Close modal on ESC key
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 closeAboutModal();
             }
@@ -1103,8 +1143,8 @@ body {
                 const wordLen = words[w].length;
                 const typedLen = wordObj.letters.length;
                 const isExactMatch = typedLen === wordLen &&
-                                     wordObj.extra.length === 0 &&
-                                     wordObj.correct.every(b => b === true);
+                    wordObj.extra.length === 0 &&
+                    wordObj.correct.every(b => b === true);
 
                 if (isExactMatch) {
                     correctWordChars += wordLen;
@@ -1235,13 +1275,14 @@ body {
     </main>
     <footer>
         <p style="margin: 0;">
-            <a href="javascript:openAboutModal()">About</a> | 
-            <a href="/privacy.html">Privacy Policy</a> | 
-            <a href="/terms.html">Terms of Service</a> | 
+            <a href="javascript:openAboutModal()">About</a> |
+            <a href="/privacy.html">Privacy Policy</a> |
+            <a href="/terms.html">Terms of Service</a> |
             <a href="/contact.html">Contact</a> |
             <a href="https://github.com/rockettyping" target="_blank">GitHub</a>
         </p>
-        <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">&copy; 2026 <strong style="color: #e2b714;">Rocket Typing</strong></p>
+        <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">&copy; 2026 <strong style="color: #e2b714;">Rocket
+                Typing</strong></p>
     </footer>
 </body>
 

@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin/
 Disallow: /private/
 
-Sitemap: https://rocket-typing.mogantimindhivarashyamsai.workers.dev/sitemap.xml
+Sitemap: https://rocket-typing.vercel.app/sitemap.xml

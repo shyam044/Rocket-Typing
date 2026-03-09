@@ -69,15 +69,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="image" href="/images/logo.png">
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-B6MS48XJ3C"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B6MS48XJ3C"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-  gtag('config', 'G-B6MS48XJ3C');
-</script>
+        gtag('config', 'G-B6MS48XJ3C');
+    </script>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8311353174841359"
         crossorigin="anonymous"></script>
@@ -97,6 +97,7 @@
             background: radial-gradient(circle at center,
                     #3a3d41 0%,
                     #2b2d30 100%);
+            scroll-behavior: smooth;
         }
 
         #app {
@@ -111,7 +112,36 @@
         }
 
         section#about {
-            display: none;
+            max-width: 800px;
+            margin: 40px auto 20px;
+            /* Increased top margin to space from app */
+            padding: 30px 20px;
+            /* Add padding for readability */
+            color: #ffffff;
+            text-align: left;
+            background: rgba(43, 45, 48, 0.8);
+            /* Semi-transparent bg to match theme */
+            border-radius: 8px;
+            border: 1px solid #444;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        section#about h2 {
+            color: #e2b714;
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        section#about p {
+            margin-bottom: 15px;
+            color: #cccccc;
+        }
+
+        section#about strong {
+            color: #e2b714;
         }
 
         /* Modal styles */
@@ -522,16 +552,6 @@
 
     </div> <!-- end #app -->
 
-    <!-- ✅ Safe AdSense Ad - Always with real content -->
-    <div style="max-width: 728px; width: 95%; margin: 40px auto 30px; text-align: center;">
-        <p style="color:#666; font-size:13px; margin:0 0 10px 0;">— Advertisement —</p>
-        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8311353174841359"
-            data-ad-slot="5317025689" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <script>
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-    </div>
-
     <!-- About Modal -->
     <div id="aboutModal">
         <div class="modal-content">
@@ -554,8 +574,6 @@
             </p>
         </div>
     </div>
-
-    <!-- Scrollable About Section (hidden, for SEO) -->
     <section id="about" aria-label="About Rocket Typing">
         <h2>About Rocket Typing</h2>
         <p>Welcome to <strong>Rocket Typing</strong>, your ultimate destination for improving <strong>typing
@@ -572,6 +590,32 @@
 
         <p>Whether you're preparing for typing speed assessments or aiming to boost productivity at work, Rocket Typing
             is your go-to <strong>online typing test</strong>. Start improving your keyboard skills today!</p>
+
+        <!-- NEW CONTENT: Add these paragraphs for value -->
+        <h3>Why Practice Typing?</h3>
+        <p>Fast typing isn't just a skill—it's a superpower in today's digital world. Studies show that improving your
+            WPM can increase productivity by up to 20%. At Rocket Typing, we focus on building muscle memory through
+            repetitive, engaging practice. Our generated sentences use real-world vocabulary, helping you type naturally
+            in emails, reports, or code.</p>
+
+        <h3>Pro Tips for Better Results</h3>
+        <ul style="color: #cccccc; margin: 15px 0; padding-left: 20px;">
+            <li><strong>Posture Matters:</strong> Sit straight, keep wrists neutral, and relax your shoulders to avoid
+                strain.</li>
+            <li><strong>Accuracy Over Speed:</strong> Aim for 95%+ accuracy first—speed follows naturally.</li>
+            <li><strong>Daily Drills:</strong> Spend 10-15 minutes daily. Track your consistency score to measure
+                evenness in your pace.</li>
+            <li><strong>Keyboard Choice:</strong> Mechanical keys can boost comfort, but start with what you have.</li>
+        </ul>
+
+        <h3>FAQ</h3>
+        <p><strong>Q: How is WPM calculated?</strong> We count correct words (5 characters) plus correct spaces, divided
+            by minutes elapsed.</p>
+        <p><strong>Q: Is this mobile-friendly?</strong> Yes! Works on desktops, tablets, and phones—though full
+            keyboards shine brightest.</p>
+        <p><strong>Q: Can I share scores?</strong> Screenshot your results or challenge friends via social media.</p>
+
+        <p>Join thousands of users leveling up their typing. Bookmark us and return often!</p>
     </section>
 
     <script>
@@ -777,7 +821,7 @@
         }
         // Vocabulary categories
         const vocabulary = {
-            nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "action", "actor", "actress", "addition",
+nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "action", "actor", "actress", "addition",
                 "address", "advice", "affair", "age", "agency", "agent", "agreement", "air", "airport", "alarm",
                 "album", "alcohol", "alert", "alien", "alliance", "alphabet", "ambition", "ambulance", "amount", "analysis",
                 "analyst", "ancestor", "angel", "anger", "angle", "animal", "anniversary", "answer", "ant", "anxiety",
@@ -1582,12 +1626,22 @@
         // Initial setup
         resetTest();
     </script>
+    <!-- ✅ Safe AdSense Ad - Always with real content -->
+    <div style="max-width: 728px; width: 95%; margin: 20px auto 40px; text-align: center;">
+        <p style="color:#666; font-size:13px; margin:0 0 10px 0;">— Advertisement —</p>
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8311353174841359"
+            data-ad-slot="5317025689" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+
     <footer>
         <p style="margin: 0;">
             <a href="javascript:openAboutModal()">About</a> |
             <a href="/privacy.html">Privacy Policy</a> |
             <a href="/terms.html">Terms of Service</a> |
-            <a href="/contact.html">Contact</a>
+            <a href="contact.html">Contact</a>
         </p>
         <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">&copy; 2026 <strong style="color: #e2b714;">Rocket
                 Typing</strong></p>
@@ -1595,6 +1649,3 @@
 </body>
 
 </html>
-
-
-

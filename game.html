@@ -541,55 +541,58 @@ cursor:pointer;
     const usernameError = document.getElementById("username-error");
 
 
-   usernameBtn.onclick = async () => {
+    usernameBtn.onclick = async () => {
 
-  const name = usernameInput.value.trim().toLowerCase();
+      const name = usernameInput.value.trim().toLowerCase();
 
-  if (!name) {
-    usernameError.textContent = "Enter a username";
-    return;
-  }
+      if (!name) {
+        usernameError.textContent = "Enter a username";
+        return;
+      }
 
-  if (name.length < 3) {
-    usernameError.textContent = "Username must be at least 3 characters";
-    return;
-  }
+      if (name.length < 3) {
+        usernameError.textContent = "Username must be at least 3 characters";
+        return;
+      }
 
-  if (!/^[a-z0-9_]+$/.test(name)) {
-    usernameError.textContent = "Only letters, numbers, underscore allowed";
-    return;
-  }
+      if (!/^[a-z0-9_]+$/.test(name)) {
+        usernameError.textContent = "Only letters, numbers, underscore allowed";
+        return;
+      }
 
-  if (aiNames.includes(name)) {
-    usernameError.textContent = "This username is reserved";
-    return;
-  }
+      if (aiNames.includes(name)) {
+        usernameError.textContent = "This username is reserved";
+        return;
+      }
 
-  try {
+      try {
 
-    const doc = await db.collection("usernames").doc(name).get();
+        const doc = await db.collection("usernames").doc(name).get();
 
-    // 🚫 Username already taken
-    if (doc.exists) {
-      usernameError.textContent = "Username already exists";
-      return;
-    }
+        // 🚫 Username already taken
+        if (doc.exists) {
+          usernameError.textContent = "Username already exists";
+          return;
+        }
 
-    // ✅ Save username
-// ✅ Save username
-await db.collection("usernames").doc(name).set({
-  created: Date.now()
-});
-    // START GAME
-    localStorage.setItem("rt_username", name);
-    usernameScreen.style.display = "none";
-    startGameWithName(name);
+        // ✅ Save username
+        // ✅ Save username
+        await db.collection("usernames").doc(name).set({
+          created: Date.now()
+        });
+        // START GAME
+        localStorage.setItem("rt_username", name);
+        usernameScreen.style.display = "none";
 
-  } catch (e) {
-    usernameError.textContent = "Connection error. Try again.";
-  }
+        setTimeout(() => {
+          startGameWithName(name);
+        }, 50);
 
-};
+      } catch (e) {
+        usernameError.textContent = "Connection error. Try again.";
+      }
+
+    };
     function startGameWithName(name) {
 
       const playerNameEl = document.querySelector("#player-lane .name");

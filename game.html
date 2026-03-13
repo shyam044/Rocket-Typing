@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rocket Typing – Rocket Race Mode</title>
+  <!-- SEO meta tags -->
+  <meta name="description"
+    content="Rocket Typing Race – Type to launch your rocket! Beat AI opponents in a real-time space race. Same ultra-accurate word engine as the main test. Fast, realistic, addictive.">
+  <meta name="keywords"
+    content="typing race, rocket typing game, typing game, rocket race, typerush style, online typing race">
+  <meta name="author" content="Rocket Typing">
+  <link rel="canonical" href="https://rockettyping.vercel.app/game.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Rocket Typing – Rocket Race">
+  <meta property="og:description"
+    content="Launch your rocket by typing! Race against AI opponents using the same smart word engine.">
+  <meta property="og:url" content="https://rockettyping.vercel.app/game.html">
+  <meta property="og:image" content="https://rockettyping.vercel.app/images/logo.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Rocket Typing – Rocket Race">
+  <meta name="twitter:description" content="Type fast. Launch your rocket. Beat the competition.">
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <meta name="theme-color" content="#323437">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-136SVFZRDF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-136SVFZRDF');
+  </script>
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8311353174841359"
+    crossorigin="anonymous"></script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <style>
+    body {
+      background-color: #0b0e17;
+      color: #e2b714;
+      font-family: 'Roboto Mono', monospace;
+      margin: 0;
+      overflow: hidden;
+      background: radial-gradient(circle at center, #1a2333 0%, #0b0e17 80%);
+    }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding-top: 20px;
+    }
+
+    #logo {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 100px;
+      opacity: 0.9;
+    }
+
+    #race-track {
+      width: 920px;
+      height: 420px;
+      background: linear-gradient(to bottom, #0f1a2e, #1e2a44);
+      border: 6px solid #e2b714;
+      border-radius: 16px;
+      position: relative;
+      margin: 40px auto 20px;
+      overflow: hidden;
+      box-shadow: 0 0 40px rgba(226, 183, 20, 0.4);
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.2;
+      animation: twinkle 1.5s infinite ease-in-out alternate;
+      box-shadow: 0 0 6px white;
+    }
+
+    @keyframes twinkle {
+      0% {
+        opacity: 0.2;
+        transform: scale(0.8);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.4);
+      }
+
+      100% {
+        opacity: 0.3;
+        transform: scale(0.9);
+      }
+    }
+
+    .lane {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+
+    #opp-lane1 {
+      top: 20px;
+    }
+
+    #opp-lane2 {
+      top: 90px;
+    }
+
+    #opp-lane3 {
+      top: 160px;
+    }
+
+    #opp-lane4 {
+      top: 230px;
+    }
+
+    #player-lane {
+      bottom: 30px;
+      background: rgba(226, 183, 20, 0.08);
+    }
+
+    .rocket-container {
+      position: relative;
+      width: 70px;
+      height: 70px;
+    }
+
+    .rocket {
+      font-size: 62px;
+      position: absolute;
+      left: 0;
+      top: 4px;
+      transition: left 0.08s cubic-bezier(0.23, 1, 0.32, 1);
+      filter: drop-shadow(0 0 12px #e2b714);
+      z-index: 10;
+    }
+
+    .player .rocket {
+      font-size: 68px;
+      color: #ffd700;
+      filter: drop-shadow(0 0 18px #ffd700);
+    }
+
+    .flame {
+      position: absolute;
+      left: -18px;
+      top: 22px;
+      font-size: 28px;
+      color: #ff4c4c;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 5;
+    }
+
+    .boost .flame {
+      opacity: 1;
+      animation: flame-flicker 0.12s infinite alternate;
+    }
+
+    @keyframes flame-flicker {
+      0% {
+        transform: scale(0.9) rotate(-8deg);
+      }
+
+      100% {
+        transform: scale(1.15) rotate(8deg);
+      }
+    }
+
+    .name {
+      position: absolute;
+      left: 90px;
+      font-size: 15px;
+      color: #ccc;
+      font-weight: bold;
+      text-shadow: 0 0 8px #000;
+    }
+
+    .player .name {
+      color: #e2b714;
+    }
+
+    #finish-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 12px;
+      background:
+        repeating-linear-gradient(45deg,
+          #fff 0px,
+          #fff 8px,
+          #000 8px,
+          #000 16px);
+      box-shadow: 0 0 20px #e2b714;
+    }
+
+    #finish-text {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #e2b714;
+      font-size: 22px;
+      font-weight: bold;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      letter-spacing: 4px;
+    }
+
+    #words {
+      position: relative;
+      font-size: 38px;
+      line-height: 1.45;
+      padding: 20px;
+      background: rgba(43, 45, 48, 0.85);
+      border-radius: 12px;
+      border: 2px solid #444;
+      margin: 0 auto 30px;
+      user-select: none;
+      height: 80px;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      white-space: nowrap;
+      transition: transform 0.06s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .word {
+      display: inline-block;
+      margin-right: 12px;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    .word.active {
+      background: none;
+      padding: 2px 8px;
+      border-bottom: 2px solid #ffffff;
+    }
+
+    .letter {
+      transition: color 0.08s ease;
+      color: #646669;
+    }
+
+    .letter.correct {
+      color: #ffffff;
+    }
+
+    .letter.incorrect {
+      color: #ff4c4c;
+      text-decoration: underline wavy #ff4c4c;
+    }
+
+    #timer {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 42px;
+      color: #ff4c4c;
+      font-weight: bold;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 8px 24px;
+      border-radius: 8px;
+    }
+
+    #result {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(11, 14, 23, 0.98);
+      padding: 50px 70px;
+      border-radius: 16px;
+      border: 3px solid #e2b714;
+      text-align: center;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 25px;
+      z-index: 100;
+      box-shadow: 0 0 60px rgba(226, 183, 20, 0.6);
+    }
+
+    #result.visible {
+      display: flex;
+    }
+
+    #result h1 {
+      font-size: 52px;
+      margin: 0;
+      color: #ffd700;
+    }
+
+    .stat {
+      font-size: 22px;
+      color: #ccc;
+    }
+
+    .stat-value {
+      font-size: 56px;
+      color: #ffffff;
+      font-weight: bold;
+    }
+
+    button {
+      background: #e2b714;
+      color: #0b0e17;
+      border: none;
+      padding: 14px 32px;
+      font-size: 20px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.08);
+      background: #ffd700;
+    }
+
+    #caret {
+      position: absolute;
+      width: 3px;
+      height: 42px;
+      background: #ffffff;
+      border-radius: 2px;
+      pointer-events: none;
+      left: 0;
+      top: 0;
+      animation: caret-blink 1s infinite;
+      z-index: 999;
+    }
+
+    @keyframes caret-blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
+    }
+
+    #space-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3000px;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.1s linear;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div id="username-screen" style="
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#0b0e17;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+z-index:9999;
+font-family:'Roboto Mono', monospace;
+">
+
+      <h1 style="color:#e2b714;">Enter Your Pilot Name</h1>
+
+      <input id="username-input" placeholder="username" style="
+padding:12px;
+font-size:20px;
+border-radius:6px;
+border:none;
+outline:none;
+text-align:center;
+">
+
+      <div id="username-error" style="color:#ff4c4c;margin-top:10px;"></div>
+
+      <button id="username-btn" style="
+margin-top:20px;
+padding:10px 30px;
+font-size:18px;
+background:#e2b714;
+border:none;
+border-radius:6px;
+cursor:pointer;
+">
+        Start Race
+      </button>
+
+    </div>
+    <img id="logo" src="images/logo.png" alt="Rocket Typing Logo">
+
+    <div id="race-track">
+      <div id="space-bg"></div>
+      <div id="finish-line"></div>
+      <div id="finish-text">FINISH</div>
+      <div class="lane" id="opp-lane1">
+        <div class="rocket-container">
+          <div class="rocket" id="opp-rocket1">🚀</div>
+          <div class="flame">🔥</div>
+        </div>
+        <div class="name" style="top:12px;">NOVA</div>
+      </div>
+
+      <div class="lane" id="opp-lane2">
+        <div class="rocket-container">
+          <div class="rocket" id="opp-rocket2">🚀</div>
+          <div class="flame">🔥</div>
+        </div>
+        <div class="name" style="top:12px;">PULSE</div>
+      </div>
+
+      <!-- ADD THESE TWO -->
+
+      <div class="lane" id="opp-lane3">
+        <div class="rocket-container">
+          <div class="rocket" id="opp-rocket3">🚀</div>
+          <div class="flame">🔥</div>
+        </div>
+        <div class="name" style="top:12px;">COMET</div>
+      </div>
+
+      <div class="lane" id="opp-lane4">
+        <div class="rocket-container">
+          <div class="rocket" id="opp-rocket4">🚀</div>
+          <div class="flame">🔥</div>
+        </div>
+        <div class="name" style="top:12px;">ORBIT</div>
+      </div>
+      <div class="lane player" id="player-lane">
+        <div class="rocket-container">
+          <div class="rocket" id="player-rocket">🚀</div>
+          <div class="flame">🔥</div>
+        </div>
+        <div class="name" style="top:12px; color:#ffd700;">YOU</div>
+      </div>
+    </div>
+
+    <div id="timer">0:00</div>
+
+    <div id="words"></div>
+
+
+    <div id="result">
+      <h1 id="race-result-title">RACE COMPLETE</h1>
+      <div id="race-result-subtitle" class="place"></div>
+
+      <div style="display:flex; gap:60px; margin:20px 0;">
+        <div class="stat">
+          <div style="font-size:18px; color:#e2b714;">WPM</div>
+          <div id="wpm-value" class="stat-value">0</div>
+        </div>
+        <div class="stat">
+          <div style="font-size:18px; color:#e2b714;">ACC</div>
+          <div id="acc-value" class="stat-value">100%</div>
+        </div>
+        <div class="stat">
+          <div style="font-size:18px; color:#e2b714;">CONS</div>
+          <div id="cons-value" class="stat-value">100%</div>
+        </div>
+      </div>
+
+      <button id="restart-btn">Race Again</button>
+    </div>
+  </div>
+
+  <footer
+    style="position:fixed; bottom:0; left:0; right:0; background:#1a2333; padding:12px; text-align:center; font-size:13px; color:#777;">
+    <a href="index.html" style="color:#e2b714; text-decoration:none;">← Back to Typing Test</a> |
+    © 2026 Rocket Typing • Pure typing adrenaline
+  </footer>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDFlSFyLG8RtOshIRI3XJ-d2Ws4R6bCqjE",
+      authDomain: "typing-usernames.firebaseapp.com",
+      projectId: "typing-usernames",
+      storageBucket: "typing-usernames.firebasestorage.app",
+      messagingSenderId: "978036744790",
+      appId: "1:978036744790:web:1c66d79a27f19a7493d1f7",
+      measurementId: "G-GEH3BRFRST"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    // ===== NORMAL USERNAME POOL =====
+    const firstNames = [
+      "alex", "aaron", "adam", "adrian", "andrew", "anthony", "arthur", "ashley", "ben", "benjamin",
+      "blake", "brandon", "brian", "bruce", "caleb", "cameron", "carl", "charles", "chris", "christian",
+      "daniel", "david", "dennis", "derek", "dominic", "dylan", "edward", "ethan", "evan", "felix",
+      "frank", "gabriel", "george", "greg", "harry", "henry", "hunter", "ian", "isaac", "jack",
+      "jacob", "james", "jason", "jay", "jeff", "jeremy", "john", "jonathan", "jordan", "joseph",
+      "josh", "julian", "justin", "kevin", "kyle", "leo", "leon", "liam", "logan", "louis",
+      "lucas", "luke", "marcus", "mark", "martin", "mason", "matt", "matthew", "max", "michael",
+      "nathan", "nicolas", "noah", "oliver", "oscar", "owen", "patrick", "paul", "peter", "philip",
+      "ray", "richard", "robert", "ryan", "sam", "samuel", "scott", "sean", "seth", "steven",
+      "theo", "thomas", "tim", "timothy", "tyler", "victor", "vincent", "wayne", "will", "william",
+      "xavier", "zach", "zachary"
+    ];
+    // Generate 1000 normal usernames
+    const aiNames = [];
+
+    for (let i = 0; i < 1000; i++) {
+      const name = firstNames[Math.floor(Math.random() * firstNames.length)];
+      const number = Math.floor(Math.random() * 9999);
+      aiNames.push(name + number);
+    }
+    const usernameScreen = document.getElementById("username-screen");
+    const usernameInput = document.getElementById("username-input");
+    const usernameBtn = document.getElementById("username-btn");
+    const usernameError = document.getElementById("username-error");
+
+
+   usernameBtn.onclick = async () => {
+
+  const name = usernameInput.value.trim().toLowerCase();
+
+  if (!name) {
+    usernameError.textContent = "Enter a username";
+    return;
+  }
+
+  if (name.length < 3) {
+    usernameError.textContent = "Username must be at least 3 characters";
+    return;
+  }
+
+  if (!/^[a-z0-9_]+$/.test(name)) {
+    usernameError.textContent = "Only letters, numbers, underscore allowed";
+    return;
+  }
+
+  if (aiNames.includes(name)) {
+    usernameError.textContent = "This username is reserved";
+    return;
+  }
+
+  try {
+
+    const doc = await db.collection("usernames").doc(name).get();
+
+    // 🚫 Username already taken
+    if (doc.exists) {
+      usernameError.textContent = "Username already exists";
+      return;
+    }
+
+    // ✅ Save username
+// ✅ Save username
+await db.collection("usernames").doc(name).set({
+  created: Date.now()
+});
+    // START GAME
+    localStorage.setItem("rt_username", name);
+    usernameScreen.style.display = "none";
+    startGameWithName(name);
+
+  } catch (e) {
+    usernameError.textContent = "Connection error. Try again.";
+  }
+
+};
+    function startGameWithName(name) {
+
+      const playerNameEl = document.querySelector("#player-lane .name");
+
+      playerNameEl.textContent = name.toUpperCase();
+
+      resetRace();
+
+    }
+    const TRACK_WIDTH = 1200;
+    // ===== PLAYER PERFORMANCE STORAGE =====
+    const CENTER = 420;
+    let worldOffset = 0;
+    let totalMatches = parseInt(localStorage.getItem("rt_matches")) || 0;
+    let totalWPM = parseFloat(localStorage.getItem("rt_total_wpm")) || 0;
+
+    function getAverageWPM() {
+      if (totalMatches === 0) return 25; // default starting difficulty
+      return totalWPM / totalMatches;
+    }
+    const PROGRESS_PER_CHAR = 7;          // ←←← 850 / 2.5 = 340 characters needed (perfect length)
+    const SCROLL_CENTER = 425;
+
+    // State
+    let words = [];
+    let currentWordIndex = 0;
+    let currentLetterIndex = 0;
+    let testActive = false;
+    let startTime = null;
+    let elapsedInterval = null;
+    let opponentInterval = null;
+
+    let playerProgress = 0;
+    let opponentProgress = [0, 0, 0, 0];
+    let opponentSpeeds = [0.55, 0.85];
+
+    let correctChars = 0;
+    let rawChars = 0;
+    let keystrokeTimestamps = [];
+    let wordsOffset = 0;
+    let typedWords = [];
+    let missedChars = 0;
+    let spaces = 0;
+    let correctSpaces = 0;
+    // DOM
+    const wordsDiv = document.getElementById('words');
+    const timerDiv = document.getElementById('timer');
+    const resultDiv = document.getElementById('result');
+    const playerRocket = document.getElementById('player-rocket');
+    const oppRockets = [
+      document.getElementById('opp-rocket1'),
+      document.getElementById('opp-rocket2'),
+      document.getElementById('opp-rocket3'),
+      document.getElementById('opp-rocket4')
+    ];
+    const restartBtn = document.getElementById('restart-btn');
+
+    function assignAINames() {
+
+      const shuffled = [...aiNames].sort(() => Math.random() - 0.5);
+      const selected = shuffled.slice(0, 4);
+
+      const nameEls = document.querySelectorAll('#race-track .lane .name');
+
+      nameEls[0].textContent = selected[0];
+      nameEls[1].textContent = selected[1];
+      nameEls[2].textContent = selected[2];
+      nameEls[3].textContent = selected[3];
+    }
+    let caret = null;
+
+    // ==================== VOCABULARY & GENERATION ====================
+    const vocabulary = {
+      nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "action", "actor", "actress", "addition"],
+      verbs: ["accept", "achieve", "acknowledge", "adapt", "add", "adjust", "admire", "admit", "adopt", "advise"],
+      adjectives: ["able", "abundant", "acceptable", "accurate", "active", "adaptable", "adorable", "adventurous", "afraid", "aggressive"],
+      adverbs: ["abruptly", "accidentally", "accordingly", "accurately", "actively", "adversely", "afterward", "almost", "always", "angrily"],
+      prepositions: ["about", "above", "across", "after", "against", "along", "amid", "among", "around", "as"],
+      articles: ["a", "an", "the", "this", "that", "these", "those", "my", "your", "his", "her", "its", "our", "their"],
+      months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+      days: Array.from({ length: 31 }, (_, i) => String(i + 1)),
+      years: Array.from({ length: 124 }, (_, i) => String(1900 + i))
+    };
+
+    const templates = {
+      easy: ["{article} {adjective} {noun} {verb} {adverb}", "{article} {noun} {verb} {preposition} {article} {adjective} {noun}"]
+    };
+
+    function randomItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+    function generateSentence() {
+      let template = randomItem(templates.easy);
+      let sentence = template
+        .replace(/{article}/g, () => randomItem(vocabulary.articles))
+        .replace(/{adjective}/g, () => randomItem(vocabulary.adjectives))
+        .replace(/{noun}/g, () => randomItem(vocabulary.nouns))
+        .replace(/{verb}/g, () => randomItem(vocabulary.verbs))
+        .replace(/{adverb}/g, () => randomItem(vocabulary.adverbs))
+        .replace(/{preposition}/g, () => randomItem(vocabulary.prepositions));
+      return sentence.toLowerCase();
+    }
+
+    function generateWords() {
+      words = [];
+      let fullText = "";
+      while (words.length < 220) {
+        fullText += generateSentence() + " ";
+        words = fullText.trim().split(" ");
+      }
+      words = words.slice(0, 220);
+    }
+
+    function renderInitialWords() {
+      wordsDiv.innerHTML = '';
+      words.forEach((word, i) => {
+        const wordSpan = document.createElement('span');
+        wordSpan.className = 'word';
+        if (i === 0) wordSpan.classList.add('active');
+        word.split('').forEach(letter => {
+          const span = document.createElement('span');
+          span.className = 'letter';
+          span.textContent = letter;
+          wordSpan.appendChild(span);
+        });
+        wordsDiv.appendChild(wordSpan);
+      });
+      createCaret();
+      refreshCaretAndScroll();
+    }
+
+    function createCaret() {
+      if (caret) return;
+      caret = document.createElement('div');
+      caret.id = 'caret';
+      wordsDiv.appendChild(caret);
+    }
+
+    function appendNewWords(count) {
+      for (let i = 0; i < count; i++) {
+        const sentence = generateSentence() + " ";
+        const newWords = sentence.trim().split(" ");
+        newWords.forEach(word => {
+          if (!word) return;
+          const wordSpan = document.createElement('span');
+          wordSpan.className = 'word';
+          word.split('').forEach(letter => {
+            const span = document.createElement('span');
+            span.className = 'letter';
+            span.textContent = letter;
+            wordSpan.appendChild(span);
+          });
+          wordsDiv.appendChild(wordSpan);
+          words.push(word);
+        });
+      }
+      if (caret) wordsDiv.appendChild(caret);
+    }
+
+    // ==================== MONKEYTYPE-STYLE CARET USING BOUNDING CLIENT RECT (FINAL FIX) ====================
+    function getCaretPosition() {
+      const activeWordEl = wordsDiv.querySelector('.word.active');
+      if (!activeWordEl) return { x: 0, y: 20 };
+
+      const letters = activeWordEl.querySelectorAll('.letter');
+      let targetEl;
+
+      if (currentLetterIndex < letters.length) {
+        targetEl = letters[currentLetterIndex];
+      } else if (letters.length > 0) {
+        targetEl = letters[letters.length - 1];
+      } else {
+        targetEl = activeWordEl;
+      }
+
+      const rect = targetEl.getBoundingClientRect();
+      const containerRect = wordsDiv.getBoundingClientRect();
+
+      let x = rect.left - containerRect.left;
+      if (currentLetterIndex >= letters.length && letters.length > 0) {
+        x += rect.width;
+      }
+      const y = rect.top - containerRect.top + 10;
+
+      return { x, y };
+    }
+
+    function refreshCaretAndScroll() {
+      requestAnimationFrame(() => {
+        void wordsDiv.offsetHeight;
+        const pos = getCaretPosition();
+
+        caret.style.left = `${pos.x}px`;
+        caret.style.top = `${pos.y}px`;
+
+        const caretX = pos.x;
+        const desiredOffset = SCROLL_CENTER - caretX;
+        wordsOffset = Math.min(0, desiredOffset);
+        wordsDiv.style.transform = `translateX(${wordsOffset}px)`;
+      });
+    }
+
+    // ==================== TYPING ENGINE ====================
+    document.addEventListener('keydown', handleKeydown);
+
+
+    function handleKeydown(e) {
+      // ←←← NEW: Completely ignore all keys while result screen is shown
+      if (resultDiv.classList.contains('visible')) {
+        return;
+      }
+
+      if (!testActive && e.key !== 'Tab') {
+        testActive = true;
+        startTime = Date.now();
+        elapsedInterval = setInterval(updateElapsed, 1000);
+        opponentInterval = setInterval(updateOpponentProgress, 50)
+        caret.style.opacity = '1';
+      }
+      if (!testActive) return;
+
+      const key = e.key;
+
+      if (key === 'Backspace') {
+        handleBackspace();
+        return;
+      }
+
+      if (key.length === 1 || key === ' ') {
+        keystrokeTimestamps.push(Date.now());
+      }
+
+      if (key === ' ') {
+        spaces++;
+        const wordLen = words[currentWordIndex].length;
+        const isCorrectSpace = (currentLetterIndex === wordLen);
+
+        if (isCorrectSpace) {
+          correctSpaces++;
+          playerProgress += PROGRESS_PER_CHAR;
+          correctChars++;
+          playerRocket.parentElement.classList.add('boost');
+          setTimeout(() => playerRocket.parentElement.classList.remove('boost'), 280);
+          updatePlayerPosition();
+        } else {
+          missedChars += wordLen - currentLetterIndex;
+          const activeWordEl = wordsDiv.querySelector('.word.active');
+          const letterSpans = activeWordEl.querySelectorAll('.letter');
+          for (let i = currentLetterIndex; i < letterSpans.length; i++) {
+            letterSpans[i].classList.add('incorrect');
+          }
+        }
+        moveToNextWord();
+        e.preventDefault();
+        return;
+      }
+
+      if (key.length === 1) {
+        typeLetter(key);
+        e.preventDefault();
+      }
+    }
+    function typeLetter(key) {
+      const word = words[currentWordIndex];
+      let wordObj = typedWords[currentWordIndex];
+      if (!wordObj) {
+        typedWords[currentWordIndex] = { letters: [], correct: [], extra: [] };
+        wordObj = typedWords[currentWordIndex];
+      }
+
+      rawChars++;
+
+      if (currentLetterIndex < word.length) {
+        wordObj.letters[currentLetterIndex] = key;
+        const isCorrect = key === word[currentLetterIndex];
+        wordObj.correct[currentLetterIndex] = isCorrect;
+
+        if (isCorrect) {
+          correctChars++;
+          playerProgress += PROGRESS_PER_CHAR;
+          updatePlayerPosition();
+        }
+
+        // DOM update (unchanged)
+        const activeWordEl = wordsDiv.querySelector('.word.active');
+        const letterSpans = activeWordEl.querySelectorAll('.letter');
+        letterSpans[currentLetterIndex].classList.toggle('correct', isCorrect);
+        letterSpans[currentLetterIndex].classList.toggle('incorrect', !isCorrect);
+
+        currentLetterIndex++;
+      } else {
+        // extra characters
+        wordObj.extra.push(key);
+        currentLetterIndex++;
+      }
+
+      refreshCaretAndScroll();
+    }
+    function handleBackspace() {
+      if (currentLetterIndex <= 0) return;
+
+      const wordObj = typedWords[currentWordIndex];
+      const activeWordEl = wordsDiv.querySelector('.word.active');
+      const letterSpans = activeWordEl.querySelectorAll('.letter');
+      const lastIndex = currentLetterIndex - 1;
+
+      // stats
+      rawChars = Math.max(0, rawChars - 1);
+      if (wordObj && lastIndex >= wordObj.letters.length) {
+        wordObj.extra.pop();
+      } else if (wordObj && wordObj.correct[lastIndex] === true) {
+        correctChars = Math.max(0, correctChars - 1);
+      }
+
+      if (letterSpans[lastIndex]) {
+        letterSpans[lastIndex].classList.remove('correct', 'incorrect');
+      }
+
+      if (wordObj) {
+        wordObj.letters[lastIndex] = undefined;
+        wordObj.correct[lastIndex] = undefined;
+      }
+
+      currentLetterIndex--;
+      refreshCaretAndScroll();
+    }
+
+    function moveToNextWord() {
+      const oldWord = wordsDiv.querySelector('.word.active');
+      if (oldWord) oldWord.classList.remove('active');
+
+      currentWordIndex++;
+      currentLetterIndex = 0;
+
+      if (currentWordIndex > words.length - 40 && playerProgress < TRACK_WIDTH) {
+        appendNewWords(80);
+      }
+
+      const allWords = wordsDiv.querySelectorAll('.word');
+      const newActive = allWords[currentWordIndex];
+      if (newActive) newActive.classList.add('active');
+
+      refreshCaretAndScroll();
+    }
+    function updatePlayerPosition() {
+      worldOffset = Math.max(0, playerProgress - CENTER);
+
+      const screenX = Math.min(playerProgress, CENTER);
+      playerRocket.style.left = `${screenX}px`;
+
+      document.getElementById("race-track").style.backgroundPosition = `-${worldOffset}px 0px`;
+      document.getElementById("space-bg").style.transform = `translateX(-${worldOffset}px)`;
+
+      updateAllVisuals();   // ← crucial
+
+      if (playerProgress >= TRACK_WIDTH) {
+        endRace(true);
+      }
+    }
+    function updateAllVisuals() {
+      // Opponents – now camera-relative
+      for (let i = 0; i < oppRockets.length; i++) {
+        const screenX = opponentProgress[i] - worldOffset;
+        oppRockets[i].style.left = `${screenX}px`;
+      }
+      // Finish line & text – now scrolls in from the right exactly like real races
+      const finishX = TRACK_WIDTH - worldOffset;
+      document.getElementById('finish-line').style.left = `${finishX}px`;
+      document.getElementById('finish-text').style.left = `${finishX + 14}px`;
+    }
+    function updateOpponentProgress() {
+      if (!testActive) return;
+      let opponentWon = false;
+      for (let i = 0; i < oppRockets.length; i++) {
+        opponentProgress[i] += opponentSpeeds[i] * 0.05; // ← delta time fix (50ms)
+        if (opponentProgress[i] >= TRACK_WIDTH) {
+          opponentWon = true;
+        }
+      }
+      if (opponentWon) {
+        endRace(false);
+        return;
+      }
+      updateAllVisuals();
+    }
+    function updateElapsed() {
+      if (!startTime) return;
+      const secs = Math.floor((Date.now() - startTime) / 1000);
+      timerDiv.textContent = `${Math.floor(secs / 60)}:${(secs % 60).toString().padStart(2, '0')}`;
+    }
+    function calculateStats() {
+      const elapsedMinutes = (Date.now() - startTime) / 60000 || 0.001;
+      let correctWordChars = 0;
+      let allCorrectChars = 0;
+      let incorrectChars = 0;
+      let extraChars = 0;
+      // Completed words (same logic as main test)
+      for (let w = 0; w < currentWordIndex; w++) {
+        const wordObj = typedWords[w] || { letters: [], correct: [], extra: [] };
+        const wordLen = words[w].length;
+        const isExactMatch = wordObj.letters.length === wordLen &&
+          wordObj.extra.length === 0 &&
+          wordObj.correct.every(b => b === true);
+        if (isExactMatch) correctWordChars += wordLen;
+        allCorrectChars += wordObj.correct.filter(b => b).length;
+        incorrectChars += wordObj.correct.filter(b => !b).length;
+        extraChars += wordObj.extra.length;
+      }
+      // Partial last word (only counts if perfect so far – same as main test)
+      if (typedWords[currentWordIndex]) {
+        const last = typedWords[currentWordIndex];
+        const hasNoIncorrect = !last.correct.some(b => b === false);
+        const hasNoExtra = last.extra.length === 0;
+
+        allCorrectChars += last.correct.filter(b => b).length;
+        incorrectChars += last.correct.filter(b => !b).length;
+        extraChars += last.extra.length;
+
+        if (hasNoIncorrect && hasNoExtra) {
+          correctWordChars += currentLetterIndex;
+        }
+      }
+      const wpm = Math.round((correctWordChars + correctSpaces) / 5 / elapsedMinutes);
+      const accuracy = (allCorrectChars + incorrectChars > 0)
+        ? Math.round((allCorrectChars / (allCorrectChars + incorrectChars)) * 100)
+        : 100;
+      // consistency stays exactly the same as before
+      let consistency = 100;
+      if (keystrokeTimestamps.length > 8) {
+        const windows = [];
+        const windowSize = 1000;
+        for (let t = startTime; t < Date.now(); t += windowSize) {
+          const count = keystrokeTimestamps.filter(ts => ts >= t && ts < t + windowSize).length;
+          windows.push(count);
+        }
+        const rawWpms = windows.map(c => (c * 60) / 5).filter(w => w > 0);
+        if (rawWpms.length > 2) {
+          const mean = rawWpms.reduce((a, b) => a + b, 0) / rawWpms.length;
+          const variance = rawWpms.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / rawWpms.length;
+          const std = Math.sqrt(variance);
+          const cov = std / mean;
+          consistency = Math.max(0, Math.round(100 - (cov * 80)));
+        }
+      }
+      return {
+        wpm: Math.max(0, wpm),
+        acc: Math.min(100, accuracy),
+        cons: Math.min(100, consistency)
+      };
+    }
+    function endRace(playerWon) {
+      testActive = false;
+      clearInterval(elapsedInterval);
+      clearInterval(opponentInterval);
+      const stats = calculateStats();
+      // ===== Update stored performance =====
+      totalMatches++;
+      totalWPM += stats.wpm;
+      localStorage.setItem("rt_matches", totalMatches);
+      localStorage.setItem("rt_total_wpm", totalWPM);
+      document.getElementById('wpm-value').textContent = stats.wpm;
+      document.getElementById('acc-value').textContent = stats.acc + '%';
+      document.getElementById('cons-value').textContent = stats.cons + '%';
+      const titleEl = document.getElementById('race-result-title');
+      const subtitleEl = document.getElementById('race-result-subtitle');
+      if (playerWon) {
+        titleEl.textContent = "🚀 YOU WIN!";
+        titleEl.style.color = "#ffd700";
+        subtitleEl.textContent = "You launched past all opponents!";
+        subtitleEl.style.color = "#e2b714";
+      } else {
+        titleEl.textContent = "BETTER LUCK NEXT TIME";
+        titleEl.style.color = "#ff4c4c";
+        subtitleEl.textContent = "One of the AI rockets beat you";
+        subtitleEl.style.color = "#aaa";
+      }
+      resultDiv.classList.add('visible');
+    }
+    function resetRace() {
+      // ===== Dynamic AI difficulty =====
+      const avgWPM = getAverageWPM();
+      const pxPerSec = (wpm) => wpm * 0.5;   // correct physics: 5 chars × 6 px × WPM / 60
+      opponentSpeeds = [
+        pxPerSec(avgWPM + 2),                 // Fast bot
+        pxPerSec(avgWPM - 5),                 // Slightly slower
+        Math.max(5, pxPerSec(avgWPM - 20)),   // Much slower
+        pxPerSec(avgWPM - 5)                  // Medium bot
+      ];
+      clearInterval(elapsedInterval);
+      clearInterval(opponentInterval);
+      testActive = false;
+      typedWords = [];
+      missedChars = 0;
+      spaces = 0;
+      correctSpaces = 0;
+      playerProgress = 0;
+      opponentProgress = [0, 0, 0, 0];
+      currentWordIndex = 0;
+      currentLetterIndex = 0;
+      correctChars = 0;
+      rawChars = 0;
+      keystrokeTimestamps = [];
+      playerRocket.style.left = '0px';
+      oppRockets.forEach(r => r.style.left = '0px');
+      oppRockets.forEach(r => r.parentElement.classList.remove('boost'));
+      timerDiv.textContent = '0:00';
+      resultDiv.classList.remove('visible');
+      wordsOffset = 0;
+      wordsDiv.style.transform = "translateX(0px)";
+      generateWords();
+      renderInitialWords();
+      assignAINames();
+      if (document.querySelectorAll('.star').length === 0) {
+        const track = document.getElementById('race-track');
+        for (let i = 0; i < 200; i++) {
+          const star = document.createElement('div');
+          star.className = 'star';
+          const size = Math.random() * 3 + 1.5;
+          star.style.width = size + 'px';
+          star.style.height = size + 'px';
+          star.style.left = Math.random() * 3000 + 'px';
+          star.style.top = Math.random() * 420 + 'px';
+          star.style.animationDelay = Math.random() * 3 + 's';
+          track.appendChild(star);
+        }
+      }
+      worldOffset = 0;
+      updateAllVisuals();   // init finish line off-screen to the right
+    }
+    restartBtn.addEventListener('click', () => {
+      resultDiv.classList.remove('visible');
+      resetRace();
+    });
+    document.body.addEventListener('click', () => { });
+    // ===== FINAL LOAD CHECK (moved here so everything is already defined) =====
+    if (localStorage.getItem("rt_username")) {
+      usernameScreen.style.display = "none";
+      startGameWithName(localStorage.getItem("rt_username"));
+    }
+  </script>
+</body>
+
+</html>

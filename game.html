@@ -372,6 +372,98 @@
       z-index: 0;
       transition: transform 0.1s linear;
     }
+
+    @keyframes leaderboardPop {
+      0% {
+        transform: translate(-50%, -60%) scale(0.9);
+        opacity: 0;
+      }
+
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+    }
+
+    #leaderboard table tr {
+      border-bottom: 1px solid #2a2f3a;
+      transition: background 0.15s;
+    }
+
+    #leaderboard table tr:hover {
+      background: #1a2333;
+    }
+
+    #leaderboard td {
+      padding: 10px 6px;
+      text-align: center;
+    }
+
+    .rank1 {
+      color: #ffd700;
+      font-weight: bold;
+    }
+
+    .rank2 {
+      color: #c0c0c0;
+      font-weight: bold;
+    }
+
+    .rank3 {
+      color: #cd7f32;
+      font-weight: bold;
+    }
+
+    #leaderboard::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #leaderboard::-webkit-scrollbar-thumb {
+      background: #e2b714;
+      border-radius: 4px;
+    }
+
+    #leaderboard::-webkit-scrollbar-track {
+      background: #0b0e17;
+    }
+
+    #race-start-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 50;
+      overflow: hidden;
+    }
+
+    #race-start-bg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 60px;
+      background: #0f1a2e;
+      filter: blur(10px);
+    }
+
+    #race-start-bg span {
+      font-size: 120px;
+    }
+
+    #race-start-text {
+      position: relative;
+      z-index: 2;
+      font-size: 80px;
+      color: #ffd700;
+      font-weight: bold;
+    }
   </style>
 </head>
 
@@ -393,6 +485,31 @@ z-index:10000;
 ">
       🏆 Leaderboard
     </button>
+    <div id="leaderboard"
+      style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(180deg,#0b0e17,#121826);order:3px solid #e2b714;border-radius:16px;padding:30px;width:80%;max-height:80%;overflow-y:auto;display:none;z-index:10001;box-shadow:0 0 40px rgba(226,183,20,0.5);animation: leaderboardPop 0.25s ease;">
+      <h2 style="text-align:center;color:#ffd700;margin-top:0;">🌎 Global Leaderboard</h2>
+      <table style="width:100%;border-collapse:collapse;color:#ccc;font-size:17px;margin-top:10px;">
+        <thead>
+          <tr style="color:#e2b714;">
+            <th>Rank</th>
+            <th>Name</th>
+            <th>Top WPM</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard-body"></tbody>
+      </table>
+      <button id="close-leaderboard" style="
+margin-top:20px;
+width:100%;
+padding:10px;
+background:#e2b714;
+border:none;
+font-weight:bold;
+cursor:pointer;
+">
+        Close
+      </button>
+    </div>
     <div id="username-screen" style="
 position:fixed;
 top:0;
@@ -437,6 +554,19 @@ cursor:pointer;
     <img id="logo" src="images/logo.png" alt="Rocket Typing Logo">
 
     <div id="race-track">
+      <div id="race-start-overlay">
+        <div id="race-start-bg">
+          <span>🚀</span>
+          <span>🚀</span>
+          <span>🚀</span>
+          <span>🚀</span>
+          <span>🚀</span>
+        </div>
+
+        <div id="race-start-text">
+          Finding pilots...
+        </div>
+      </div>
       <div id="space-bg"></div>
       <div id="finish-line"></div>
       <div id="finish-text">FINISH</div>
@@ -481,58 +611,12 @@ cursor:pointer;
         <div class="name" style="top:12px; color:#ffd700;">YOU</div>
       </div>
     </div>
-
     <div id="timer">0:00</div>
-
     <div id="words"></div>
-
-
     <div id="result">
-      <div id="leaderboard" style="
-position:fixed;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-background:#0b0e17;
-border:3px solid #e2b714;
-border-radius:12px;
-padding:30px;
-width:420px;
-max-height:520px;
-overflow-y:auto;
-display:none;
-z-index:10001;
-">
 
-        <h2 style="text-align:center;color:#ffd700;margin-top:0;">🌎 Global Leaderboard</h2>
-
-        <table style="width:100%;border-collapse:collapse;color:#ccc;font-size:16px;">
-          <thead>
-            <tr style="color:#e2b714;">
-              <th>#</th>
-              <th>Name</th>
-              <th>Top WPM</th>
-            </tr>
-          </thead>
-          <tbody id="leaderboard-body"></tbody>
-        </table>
-
-        <button id="close-leaderboard" style="
-margin-top:20px;
-width:100%;
-padding:10px;
-background:#e2b714;
-border:none;
-font-weight:bold;
-cursor:pointer;
-">
-          Close
-        </button>
-
-      </div>
       <h1 id="race-result-title">RACE COMPLETE</h1>
       <div id="race-result-subtitle" class="place"></div>
-
       <div style="display:flex; gap:60px; margin:20px 0;">
         <div class="stat">
           <div style="font-size:18px; color:#e2b714;">WPM</div>
@@ -547,17 +631,14 @@ cursor:pointer;
           <div id="cons-value" class="stat-value">100%</div>
         </div>
       </div>
-
       <button id="restart-btn">Race Again</button>
     </div>
   </div>
-
   <footer
     style="position:fixed; bottom:0; left:0; right:0; background:#1a2333; padding:12px; text-align:center; font-size:13px; color:#777;">
     <a href="index.html" style="color:#e2b714; text-decoration:none;">← Back to Typing Test</a> |
     © 2026 Rocket Typing • Pure typing adrenaline
   </footer>
-
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyDFlSFyLG8RtOshIRI3XJ-d2Ws4R6bCqjE",
@@ -568,10 +649,40 @@ cursor:pointer;
       appId: "1:978036744790:web:1c66d79a27f19a7493d1f7",
       measurementId: "G-GEH3BRFRST"
     };
-
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    // ===== NORMAL USERNAME POOL =====
+    // SOUND ENGINE
+    const sounds = {
+      ambient: new Audio('sounds/space-ambient.mp3'),
+      boost: new Audio('sounds/rocket-boost.mp3'),
+      typeCorrect: new Audio('sounds/type-correct.mp3'),
+      typeIncorrect: new Audio('sounds/type-incorrect.mp3'),
+      countdown: new Audio('sounds/countdown-beep.mp3'),
+      startIgnition: new Audio('sounds/race-start.mp3'),
+      win: new Audio('sounds/win-fanfare.mp3'),
+      lose: new Audio('sounds/lose-sound.mp3'),
+      finish: new Audio('sounds/finish-whoosh.mp3')
+    };
+    // Make them attractive & performant
+    Object.values(sounds).forEach(s => {
+      s.preload = 'auto';
+      s.volume = 0.65;
+    });
+    sounds.ambient.loop = true;
+    sounds.ambient.volume = 0.25;     // subtle background
+    sounds.boost.volume = 0.85;
+    sounds.win.volume = 0.95;
+    sounds.lose.volume = 0.75;
+    sounds.finish.volume = 0.85;
+    sounds.typeCorrect.volume = 0.45;
+    sounds.typeIncorrect.volume = 0.55;
+    function playSound(key) {
+      const audio = sounds[key];
+      if (!audio) return;
+      const sound = audio.cloneNode();
+      audio.currentTime = 0;           // instant replay
+      audio.play().catch(() => { });    // safe on mobile
+    }
     const firstNames = [
       "alex", "aaron", "adam", "adrian", "andrew", "anthony", "arthur", "ashley", "ben", "benjamin",
       "blake", "brandon", "brian", "bruce", "caleb", "cameron", "carl", "charles", "chris", "christian",
@@ -587,7 +698,6 @@ cursor:pointer;
     ];
     // Generate 1000 normal usernames
     const aiNames = [];
-
     for (let i = 0; i < 1000; i++) {
       const name = firstNames[Math.floor(Math.random() * firstNames.length)];
       const number = Math.floor(Math.random() * 9999);
@@ -597,68 +707,51 @@ cursor:pointer;
     const usernameInput = document.getElementById("username-input");
     const usernameBtn = document.getElementById("username-btn");
     const usernameError = document.getElementById("username-error");
-
-
     usernameBtn.onclick = async () => {
-
       const name = usernameInput.value.trim().toLowerCase();
-
       if (!name) {
         usernameError.textContent = "Enter a username";
         return;
       }
-
       if (name.length < 3) {
         usernameError.textContent = "Username must be at least 3 characters";
         return;
       }
-
       if (!/^[a-z0-9_]+$/.test(name)) {
         usernameError.textContent = "Only letters, numbers, underscore allowed";
         return;
       }
-
       if (aiNames.includes(name)) {
         usernameError.textContent = "This username is reserved";
         return;
       }
-
       try {
-
         const doc = await db.collection("usernames").doc(name).get();
-
         // 🚫 Username already taken
         if (doc.exists) {
           usernameError.textContent = "Username already exists";
           return;
         }
-
-        // ✅ Save username
-        // ✅ Save username
         await db.collection("usernames").doc(name).set({
           created: Date.now()
         });
         // START GAME
         localStorage.setItem("rt_username", name);
+        leaderboardDiv.style.display = "none";
         usernameScreen.style.display = "none";
-
         setTimeout(() => {
-          startGameWithName(name);
+          showRaceCountdown(() => {
+            startGameWithName(name);
+          });
         }, 50);
-
       } catch (e) {
         usernameError.textContent = "Connection error. Try again.";
       }
-
     };
     function startGameWithName(name) {
-
       const playerNameEl = document.querySelector("#player-lane .name");
-
       playerNameEl.textContent = name.toUpperCase();
-
       resetRace();
-
     }
     const TRACK_WIDTH = 1200;
     // ===== PLAYER PERFORMANCE STORAGE =====
@@ -666,27 +759,24 @@ cursor:pointer;
     let worldOffset = 0;
     let totalMatches = parseInt(localStorage.getItem("rt_matches")) || 0;
     let totalWPM = parseFloat(localStorage.getItem("rt_total_wpm")) || 0;
-
     function getAverageWPM() {
       if (totalMatches === 0) return 25; // default starting difficulty
       return totalWPM / totalMatches;
     }
     const PROGRESS_PER_CHAR = 7;          // ←←← 850 / 2.5 = 340 characters needed (perfect length)
     const SCROLL_CENTER = 425;
-
     // State
     let words = [];
     let currentWordIndex = 0;
     let currentLetterIndex = 0;
     let testActive = false;
     let startTime = null;
+    let raceStarted = false;
     let elapsedInterval = null;
     let opponentInterval = null;
-
     let playerProgress = 0;
     let opponentProgress = [0, 0, 0, 0];
     let opponentSpeeds = [0.55, 0.85];
-
     let correctChars = 0;
     let rawChars = 0;
     let keystrokeTimestamps = [];
@@ -707,21 +797,16 @@ cursor:pointer;
       document.getElementById('opp-rocket4')
     ];
     const restartBtn = document.getElementById('restart-btn');
-
     function assignAINames() {
-
       const shuffled = [...aiNames].sort(() => Math.random() - 0.5);
       const selected = shuffled.slice(0, 4);
-
       const nameEls = document.querySelectorAll('#race-track .lane .name');
-
       nameEls[0].textContent = selected[0];
       nameEls[1].textContent = selected[1];
       nameEls[2].textContent = selected[2];
       nameEls[3].textContent = selected[3];
     }
     let caret = null;
-
     // ==================== VOCABULARY & GENERATION ====================
     const vocabulary = {
       nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "action", "actor", "actress", "addition"],
@@ -734,11 +819,9 @@ cursor:pointer;
       days: Array.from({ length: 31 }, (_, i) => String(i + 1)),
       years: Array.from({ length: 124 }, (_, i) => String(1900 + i))
     };
-
     const templates = {
       easy: ["{article} {adjective} {noun} {verb} {adverb}", "{article} {noun} {verb} {preposition} {article} {adjective} {noun}"]
     };
-
     function randomItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
     function generateSentence() {
       let template = randomItem(templates.easy);
@@ -751,7 +834,6 @@ cursor:pointer;
         .replace(/{preposition}/g, () => randomItem(vocabulary.prepositions));
       return sentence.toLowerCase();
     }
-
     function generateWords() {
       words = [];
       let fullText = "";
@@ -761,7 +843,6 @@ cursor:pointer;
       }
       words = words.slice(0, 220);
     }
-
     function renderInitialWords() {
       wordsDiv.innerHTML = '';
       words.forEach((word, i) => {
@@ -779,14 +860,12 @@ cursor:pointer;
       createCaret();
       refreshCaretAndScroll();
     }
-
     function createCaret() {
       if (caret) return;
       caret = document.createElement('div');
       caret.id = 'caret';
       wordsDiv.appendChild(caret);
     }
-
     function appendNewWords(count) {
       for (let i = 0; i < count; i++) {
         const sentence = generateSentence() + " ";
@@ -807,7 +886,6 @@ cursor:pointer;
       }
       if (caret) wordsDiv.appendChild(caret);
     }
-
     // ==================== MONKEYTYPE-STYLE CARET USING BOUNDING CLIENT RECT (FINAL FIX) ====================
     function getCaretPosition() {
       const activeWordEl = wordsDiv.querySelector('.word.active');
@@ -856,7 +934,7 @@ cursor:pointer;
 
 
     function handleKeydown(e) {
-      // ←←← NEW: Completely ignore all keys while result screen is shown
+      if (!raceStarted) return;
       if (resultDiv.classList.contains('visible')) {
         return;
       }
@@ -897,6 +975,7 @@ cursor:pointer;
           missedChars += wordLen - currentLetterIndex;
           const activeWordEl = wordsDiv.querySelector('.word.active');
           const letterSpans = activeWordEl.querySelectorAll('.letter');
+          playSound('typeIncorrect');
           for (let i = currentLetterIndex; i < letterSpans.length; i++) {
             letterSpans[i].classList.add('incorrect');
           }
@@ -918,43 +997,38 @@ cursor:pointer;
         typedWords[currentWordIndex] = { letters: [], correct: [], extra: [] };
         wordObj = typedWords[currentWordIndex];
       }
-
       rawChars++;
-
       if (currentLetterIndex < word.length) {
         wordObj.letters[currentLetterIndex] = key;
         const isCorrect = key === word[currentLetterIndex];
         wordObj.correct[currentLetterIndex] = isCorrect;
-
-        if (isCorrect) {
-          correctChars++;
-          playerProgress += PROGRESS_PER_CHAR;
-          updatePlayerPosition();
-        }
-
-        // DOM update (unchanged)
+    if (isCorrect) {
+  correctChars++;
+  playerProgress += PROGRESS_PER_CHAR;
+  updatePlayerPosition();
+  playSound('typeCorrect');
+} else {
+  playSound('typeIncorrect');  
+}
         const activeWordEl = wordsDiv.querySelector('.word.active');
         const letterSpans = activeWordEl.querySelectorAll('.letter');
         letterSpans[currentLetterIndex].classList.toggle('correct', isCorrect);
         letterSpans[currentLetterIndex].classList.toggle('incorrect', !isCorrect);
-
         currentLetterIndex++;
       } else {
         // extra characters
         wordObj.extra.push(key);
         currentLetterIndex++;
+        playSound('typeIncorrect');
       }
-
       refreshCaretAndScroll();
     }
     function handleBackspace() {
       if (currentLetterIndex <= 0) return;
-
       const wordObj = typedWords[currentWordIndex];
       const activeWordEl = wordsDiv.querySelector('.word.active');
       const letterSpans = activeWordEl.querySelectorAll('.letter');
       const lastIndex = currentLetterIndex - 1;
-
       // stats
       rawChars = Math.max(0, rawChars - 1);
       if (wordObj && lastIndex >= wordObj.letters.length) {
@@ -962,49 +1036,38 @@ cursor:pointer;
       } else if (wordObj && wordObj.correct[lastIndex] === true) {
         correctChars = Math.max(0, correctChars - 1);
       }
-
       if (letterSpans[lastIndex]) {
         letterSpans[lastIndex].classList.remove('correct', 'incorrect');
       }
-
       if (wordObj) {
         wordObj.letters[lastIndex] = undefined;
         wordObj.correct[lastIndex] = undefined;
       }
-
       currentLetterIndex--;
       refreshCaretAndScroll();
     }
-
     function moveToNextWord() {
       const oldWord = wordsDiv.querySelector('.word.active');
       if (oldWord) oldWord.classList.remove('active');
-
       currentWordIndex++;
       currentLetterIndex = 0;
-
       if (currentWordIndex > words.length - 40 && playerProgress < TRACK_WIDTH) {
         appendNewWords(80);
       }
-
       const allWords = wordsDiv.querySelectorAll('.word');
       const newActive = allWords[currentWordIndex];
       if (newActive) newActive.classList.add('active');
-
       refreshCaretAndScroll();
     }
     function updatePlayerPosition() {
       worldOffset = Math.max(0, playerProgress - CENTER);
-
       const screenX = Math.min(playerProgress, CENTER);
       playerRocket.style.left = `${screenX}px`;
-
       document.getElementById("race-track").style.backgroundPosition = `-${worldOffset}px 0px`;
       document.getElementById("space-bg").style.transform = `translateX(-${worldOffset}px)`;
-
       updateAllVisuals();   // ← crucial
-
       if (playerProgress >= TRACK_WIDTH) {
+        playSound('finish');
         endRace(true);
       }
     }
@@ -1097,34 +1160,31 @@ cursor:pointer;
       };
     }
     function endRace(playerWon) {
+      sounds.ambient.pause();
+sounds.ambient.currentTime = 0;
       testActive = false;
       clearInterval(elapsedInterval);
       clearInterval(opponentInterval);
+      if (playerWon) {
+        playSound('win');
+      } else {
+        playSound('lose');
+      }
       const stats = calculateStats();
-
       // ===== SAVE BEST WPM =====
       const username = localStorage.getItem("rt_username");
-
       if (username) {
-
         const userRef = db.collection("leaderboard").doc(username);
-
         userRef.get().then(doc => {
-
           if (!doc.exists || stats.wpm > doc.data().topWPM) {
-
             userRef.set({
               name: username,
               topWPM: stats.wpm,
               updated: Date.now()
             });
-
           }
-
         });
-
       }
-
       // ===== Update stored performance =====
       totalMatches++;
       totalWPM += stats.wpm;
@@ -1147,14 +1207,15 @@ cursor:pointer;
         subtitleEl.style.color = "#aaa";
       }
       resultDiv.classList.add('visible');
+      leaderboardBtn.style.display = "block"; // ADD THIS
     }
     function resetRace() {
-      // ===== Dynamic AI difficulty =====
+      raceStarted = false;
       const avgWPM = getAverageWPM();
       const pxPerSec = (wpm) => wpm * 0.5;   // correct physics: 5 chars × 6 px × WPM / 60
       opponentSpeeds = [
-        pxPerSec(avgWPM + 2),                 // Fast bot
-        pxPerSec(avgWPM - 5),                 // Slightly slower
+        pxPerSec(avgWPM + 20),                 // Fast bot
+        pxPerSec(avgWPM + 15),                 // Slightly slower
         Math.max(5, pxPerSec(avgWPM - 20)),   // Much slower
         pxPerSec(avgWPM - 5)                  // Medium bot
       ];
@@ -1197,61 +1258,125 @@ cursor:pointer;
         }
       }
       worldOffset = 0;
-      updateAllVisuals();   // init finish line off-screen to the right
+      updateAllVisuals();
+    }
+    function showRaceCountdown(startCallback) {
+      leaderboardBtn.style.display = "none";
+      const overlay = document.getElementById("race-start-overlay");
+      const text = document.getElementById("race-start-text");
+      overlay.style.display = "flex";
+      text.textContent = "Finding pilots...";
+
+      playSound('startIgnition');   
+
+      setTimeout(() => {
+        let count = 3;
+        const interval = setInterval(() => {
+          text.textContent = count;
+          playSound('countdown');  
+          count--;
+          if (count === 0) {
+            clearInterval(interval);
+            setTimeout(() => {
+              text.textContent = "LET'S GO!";
+              playSound('startIgnition'); 
+                sounds.ambient.currentTime = 0;
+  sounds.ambient.play().catch(() => {});
+            }, 800);
+            setTimeout(() => {
+              overlay.style.display = "none";
+              raceStarted = true;
+              startCallback();
+            }, 1600);
+          }
+        }, 950);
+      }, 800);
     }
     restartBtn.addEventListener('click', () => {
+      leaderboardBtn.style.display = "none";
       resultDiv.classList.remove('visible');
       resetRace();
+      showRaceCountdown(() => {
+      });
     });
     document.body.addEventListener('click', () => { });
-    // ===== FINAL LOAD CHECK (moved here so everything is already defined) =====
+    // ===== FINAL LOAD CHECK =====
     if (localStorage.getItem("rt_username")) {
+      const name = localStorage.getItem("rt_username");
       usernameScreen.style.display = "none";
-      startGameWithName(localStorage.getItem("rt_username"));
+      startGameWithName(name);
+      setTimeout(() => {
+        showRaceCountdown(() => {
+
+        });
+      }, 50);
+
     }
     const leaderboardBtn = document.getElementById("leaderboard-btn");
     const leaderboardDiv = document.getElementById("leaderboard");
     const leaderboardBody = document.getElementById("leaderboard-body");
     const closeLeaderboard = document.getElementById("close-leaderboard");
-
     leaderboardBtn.onclick = loadLeaderboard;
     closeLeaderboard.onclick = () => leaderboardDiv.style.display = "none";
-
     async function loadLeaderboard() {
-
-      leaderboardBody.innerHTML = "Loading...";
-
-      const snapshot = await db.collection("leaderboard")
-        .orderBy("topWPM", "desc")
-        .limit(100)
-        .get();
-
-      leaderboardBody.innerHTML = "";
-
-      let rank = 1;
-
-      snapshot.forEach(doc => {
-
-        const data = doc.data();
-
-        const row = document.createElement("tr");
-
-        row.innerHTML = `
-      <td>${rank}</td>
-      <td>${data.name}</td>
-      <td>${data.topWPM}</td>
-    `;
-
-        leaderboardBody.appendChild(row);
-
-        rank++;
-
-      });
-
-      leaderboardDiv.style.display = "block";
-
+      if (testActive) return;
+      leaderboardBody.innerHTML = "<tr><td colspan='3'>Loading...</td></tr>";
+      try {
+        const snapshot = await db.collection("leaderboard")
+          .orderBy("topWPM", "desc")
+          .limit(100)
+          .get();
+        leaderboardBody.innerHTML = "";
+        let rank = 1;
+        const currentUser = localStorage.getItem("rt_username");
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const row = document.createElement("tr");
+          let rankDisplay = rank;
+          if (rank === 1) rankDisplay = "🥇";
+          if (rank === 2) rankDisplay = "🥈";
+          if (rank === 3) rankDisplay = "🥉";
+          row.innerHTML = `
+        <td class="rank${rank}">${rankDisplay}</td>
+        <td>${data.name}</td>
+        <td style="color:#ffd700;font-weight:bold;">${data.topWPM}</td>
+      `;
+          if (data.name === currentUser) {
+            row.style.background = "#1a2a3d";
+            row.style.color = "#ffd700";
+            row.style.fontWeight = "bold";
+          }
+          leaderboardBody.appendChild(row);
+          rank++;
+        });
+        if (currentUser) {
+          const userDoc = await db.collection("leaderboard").doc(currentUser).get();
+          if (userDoc.exists) {
+            const myWPM = userDoc.data().topWPM;
+            const betterPlayers = await db.collection("leaderboard")
+              .where("topWPM", ">", myWPM)
+              .get();
+            const playerRank = betterPlayers.size + 1;
+            const oldRank = document.getElementById("player-rank");
+            if (oldRank) oldRank.remove();
+            const info = document.createElement("div");
+            info.id = "player-rank";
+            info.style.marginTop = "15px";
+            info.style.textAlign = "center";
+            info.style.color = "#e2b714";
+            info.style.fontSize = "18px";
+            info.innerHTML = `Your Global Rank: <b>#${playerRank}</b>`;
+            leaderboardDiv.appendChild(info);
+          }
+        }
+        leaderboardDiv.style.display = "block";
+      } catch (error) {
+        console.error("Leaderboard error:", error);
+        leaderboardBody.innerHTML =
+          "<tr><td colspan='3'>Error loading leaderboard</td></tr>";
+      }
     }
   </script>
+  </div>
 </body>
-
 </html>

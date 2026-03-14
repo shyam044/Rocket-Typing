@@ -377,6 +377,22 @@
 
 <body>
   <div id="app">
+    <button id="leaderboard-btn" style="
+position:fixed;
+top:20px;
+right:20px;
+background:#e2b714;
+color:#0b0e17;
+border:none;
+padding:10px 18px;
+font-size:16px;
+font-weight:bold;
+border-radius:6px;
+cursor:pointer;
+z-index:10000;
+">
+      🏆 Leaderboard
+    </button>
     <div id="username-screen" style="
 position:fixed;
 top:0;
@@ -473,16 +489,47 @@ cursor:pointer;
 
     <div id="result">
       <div id="leaderboard" style="
-margin-top:20px;
-color:#fff;
-text-align:center;
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:#0b0e17;
+border:3px solid #e2b714;
+border-radius:12px;
+padding:30px;
+width:420px;
+max-height:520px;
+overflow-y:auto;
+display:none;
+z-index:10001;
 ">
 
-<h2>🏆 Global Leaderboard</h2>
+        <h2 style="text-align:center;color:#ffd700;margin-top:0;">🌎 Global Leaderboard</h2>
 
-<div id="leaderboard-list"></div>
+        <table style="width:100%;border-collapse:collapse;color:#ccc;font-size:16px;">
+          <thead>
+            <tr style="color:#e2b714;">
+              <th>#</th>
+              <th>Name</th>
+              <th>Top WPM</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body"></tbody>
+        </table>
 
-</div>
+        <button id="close-leaderboard" style="
+margin-top:20px;
+width:100%;
+padding:10px;
+background:#e2b714;
+border:none;
+font-weight:bold;
+cursor:pointer;
+">
+          Close
+        </button>
+
+      </div>
       <h1 id="race-result-title">RACE COMPLETE</h1>
       <div id="race-result-subtitle" class="place"></div>
 
@@ -524,37 +571,6 @@ text-align:center;
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    async function saveScore(wpm, acc) {
-
-  const username = localStorage.getItem("rt_username");
-  if (!username) return;
-
-  const ref = db.collection("leaderboard").doc(username);
-
-  const doc = await ref.get();
-
-  if (!doc.exists) {
-
-    await ref.set({
-      bestWpm: wpm,
-      bestAcc: acc,
-      matches: 1,
-      updated: Date.now()
-    });
-
-  } else {
-
-    const data = doc.data();
-
-    await ref.update({
-      bestWpm: Math.max(data.bestWpm, wpm),
-      bestAcc: Math.max(data.bestAcc, acc),
-      matches: (data.matches || 0) + 1,
-      updated: Date.now()
-    });
-
-  }
-}
     // ===== NORMAL USERNAME POOL =====
     const firstNames = [
       "alex", "aaron", "adam", "adrian", "andrew", "anthony", "arthur", "ashley", "ben", "benjamin",
@@ -1050,10 +1066,7 @@ text-align:center;
         allCorrectChars += last.correct.filter(b => b).length;
         incorrectChars += last.correct.filter(b => !b).length;
         extraChars += last.extra.length;
-
-        if (hasNoIncorrect && hasNoExtra) {
-          correctWordChars += currentLetterIndex;
-        }
+        correctWordChars += last.correct.filter(b => b === true).length;
       }
       const wpm = Math.round((correctWordChars + correctSpaces) / 5 / elapsedMinutes);
       const accuracy = (allCorrectChars + incorrectChars > 0)
@@ -1088,7 +1101,30 @@ text-align:center;
       clearInterval(elapsedInterval);
       clearInterval(opponentInterval);
       const stats = calculateStats();
-      saveScore(stats.wpm, stats.acc);
+
+      // ===== SAVE BEST WPM =====
+      const username = localStorage.getItem("rt_username");
+
+      if (username) {
+
+        const userRef = db.collection("leaderboard").doc(username);
+
+        userRef.get().then(doc => {
+
+          if (!doc.exists || stats.wpm > doc.data().topWPM) {
+
+            userRef.set({
+              name: username,
+              topWPM: stats.wpm,
+              updated: Date.now()
+            });
+
+          }
+
+        });
+
+      }
+
       // ===== Update stored performance =====
       totalMatches++;
       totalWPM += stats.wpm;
@@ -1111,7 +1147,6 @@ text-align:center;
         subtitleEl.style.color = "#aaa";
       }
       resultDiv.classList.add('visible');
-      loadLeaderboard();
     }
     function resetRace() {
       // ===== Dynamic AI difficulty =====
@@ -1174,33 +1209,48 @@ text-align:center;
       usernameScreen.style.display = "none";
       startGameWithName(localStorage.getItem("rt_username"));
     }
+    const leaderboardBtn = document.getElementById("leaderboard-btn");
+    const leaderboardDiv = document.getElementById("leaderboard");
+    const leaderboardBody = document.getElementById("leaderboard-body");
+    const closeLeaderboard = document.getElementById("close-leaderboard");
+
+    leaderboardBtn.onclick = loadLeaderboard;
+    closeLeaderboard.onclick = () => leaderboardDiv.style.display = "none";
+
     async function loadLeaderboard() {
 
-  const snap = await db
-    .collection("leaderboard")
-    .orderBy("bestWpm", "desc")
-    .limit(10)
-    .get();
+      leaderboardBody.innerHTML = "Loading...";
 
-  const container = document.getElementById("leaderboard-list");
+      const snapshot = await db.collection("leaderboard")
+        .orderBy("topWPM", "desc")
+        .limit(100)
+        .get();
 
-  container.innerHTML = "";
+      leaderboardBody.innerHTML = "";
 
-  snap.forEach((doc, index) => {
+      let rank = 1;
 
-    const data = doc.data();
+      snapshot.forEach(doc => {
 
-    const row = document.createElement("div");
+        const data = doc.data();
 
-    row.style.padding = "6px";
+        const row = document.createElement("tr");
 
-    row.innerHTML =
-      `${index + 1}. <b>${doc.id}</b> — ${data.bestWpm} WPM (${data.bestAcc}%)`;
+        row.innerHTML = `
+      <td>${rank}</td>
+      <td>${data.name}</td>
+      <td>${data.topWPM}</td>
+    `;
 
-    container.appendChild(row);
+        leaderboardBody.appendChild(row);
 
-  });
-}
+        rank++;
+
+      });
+
+      leaderboardDiv.style.display = "block";
+
+    }
   </script>
 </body>
 

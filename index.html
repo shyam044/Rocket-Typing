@@ -845,7 +845,7 @@
         }
         // Vocabulary categories
         const vocabulary = {
-       nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "action", "actor", "actress", "addition",
+nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "action", "actor", "actress", "addition",
                 "address", "advice", "affair", "age", "agency", "agent", "agreement", "air", "airport", "alarm",
                 "album", "alcohol", "alert", "alien", "alliance", "alphabet", "ambition", "ambulance", "amount", "analysis",
                 "analyst", "ancestor", "angel", "anger", "angle", "animal", "anniversary", "answer", "ant", "anxiety",
@@ -1142,7 +1142,8 @@
             articles: ["a", "an", "the", "this", "that", "these", "those", "my", "your", "his", "her", "its", "our", "their",
                 "all", "another", "any", "both", "each", "either", "enough", "few", "fewer", "fewest", "many", "more", "most",
                 "much", "neither", "no", "other", "several", "some", "such", "what", "which", "whose", "each and every", "certain",
-                "certainly", "half", "little", "less", "least", "plenty", "various", "one", "two", "three", "first", "second", "third"],
+                "certainly", "half", "little", "less", "least", "plenty", "various", "one", "two", "three", "first", "second", "third"]
+,
             months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
             days: Array.from({ length: 31 }, (_, i) => String(i + 1)),
             years: Array.from({ length: 124 }, (_, i) => String(1900 + i)),
@@ -1177,20 +1178,47 @@
         }
 
         // Generate one random sentence
+        // Monkeytype-style word length weighting
+function weightedWord(list) {
+
+    const weights = {
+        1: 10,   // very common
+        2: 25,   // very common
+        3: 30,   // most common
+        4: 20,
+        5: 10,
+        6: 4,
+        7: 1,    // very rare
+        8: 0.5
+    };
+
+    const pool = [];
+
+    list.forEach(word => {
+        const len = word.length;
+        const weight = weights[len] || 0.3;
+
+        for (let i = 0; i < weight * 10; i++) {
+            pool.push(word);
+        }
+    });
+
+    return pool[Math.floor(Math.random() * pool.length)];
+}
         function generateSentence() {
             const diff = config.difficulty;
             const currentTemplates = templates[diff] || templates.medium;
             let template = randomItem(currentTemplates);
             let sentence = template
                 .replace("{article}", randomItem(vocabulary.articles))
-                .replace("{adjective}", randomItem(vocabulary.adjectives))
-                .replace("{noun}", randomItem(vocabulary.nouns))
-                .replace("{verb}", randomItem(vocabulary.verbs))
-                .replace("{adverb}", randomItem(vocabulary.adverbs))
+               .replace("{noun}", weightedWord(vocabulary.nouns))
+.replace("{verb}", weightedWord(vocabulary.verbs))
+.replace("{adjective}", weightedWord(vocabulary.adjectives))
+.replace("{adverb}", weightedWord(vocabulary.adverbs))
                 .replace("{preposition}", randomItem(vocabulary.prepositions))
                 .replace("{article}", randomItem(vocabulary.articles))
-                .replace("{adjective}", randomItem(vocabulary.adjectives))
-                .replace("{noun}", randomItem(vocabulary.nouns))
+                .replace("{adjective}", weightedWord(vocabulary.adjectives))
+                .replace("{noun}", weightedWord(vocabulary.nouns))
                 .replace("{year}", randomItem(vocabulary.years))
                 .replace("{age}", randomItem(vocabulary.ages))
                 .replace("{month}", randomItem(vocabulary.months))

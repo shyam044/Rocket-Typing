@@ -1441,22 +1441,28 @@
         }
         // Initial setup
         resetTest();
-        async function saveScore(name, wpm, accuracy) {
+async function saveScore(name, wpm, accuracy) {
+    try {
+        const userRef = doc(db, "typing_test_scores", name);   // ← name becomes the document ID
 
-            try {
-                await addDoc(collection(db, "typing_test_scores"), {
-                    name: name,
-                    wpm: wpm,
-                    accuracy: accuracy,
-                    time: Date.now()
-                });
-            } catch (e) {
-                console.log("Leaderboard save failed:", e);
-            }
+        const existing = await getDoc(userRef);
+        const existingData = existing.data();
 
-            loadLeaderboard();
-
+        // Only save if this is the first time or the new score is better
+        if (!existing.exists() || wpm > (existingData?.wpm || 0)) {
+            await setDoc(userRef, {
+                name: name,
+                wpm: wpm,
+                accuracy: accuracy,
+                time: Date.now()
+            });
         }
+    } catch (e) {
+        console.error("Leaderboard save failed:", e);   // ← better debugging
+    }
+
+    loadLeaderboard();
+}
         async function loadLeaderboard() {
 
             const q = query(

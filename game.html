@@ -725,8 +725,7 @@ cursor:pointer;
       try {
         const userRef = db.collection("users").doc(name);
         const doc = await userRef.get();
-        if (doc.exists()) return error.textContent = "Username already taken";
-
+        if (doc.exists) return error.textContent = "Username already taken";   // ← removed ()
         await userRef.set({ name, country, created: Date.now() });
 
         localStorage.setItem("rt_registered_name", name);
@@ -735,7 +734,10 @@ cursor:pointer;
         usernameScreen.style.display = "none";
         startGameWithName(name);
       } catch (e) {
-        error.textContent = "Connection error";
+        console.error("Firebase username-screen error:", e);
+        error.textContent = e.code === "permission-denied"
+          ? "Permission denied — republish Firebase rules"
+          : `Error: ${e.message}`;
       }
     };
     function startGameWithName(name) {
@@ -1386,9 +1388,9 @@ cursor:pointer;
       if (!country) return error.textContent = 'Enter your country';
 
       try {
-        const userRef = db.collection("usernames").doc(name);
+        const userRef = db.collection("users").doc(name);
         const docSnap = await userRef.get();
-        if (docSnap.exists()) return error.textContent = 'Username already taken';
+        if (docSnap.exists) return error.textContent = 'Username already taken';
 
         await userRef.set({ name, country, created: Date.now() });
 
@@ -1399,7 +1401,10 @@ cursor:pointer;
         closeRegisterModal();
         loadLeaderboard();
       } catch (e) {
-        error.textContent = 'Error';
+        console.error("Firebase register modal error:", e);
+        error.textContent = e.code === "permission-denied"
+          ? "Permission denied — republish Firebase rules"
+          : `Error: ${e.message}`;
       }
     }
   </script>
